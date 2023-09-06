@@ -15,7 +15,6 @@ import (
 
 	ast2 "github.com/bighuangbee/bee-admin/server/utils/ast"
 
-	"github.com/bighuangbee/bee-admin/server/resource/autocode_template/subcontract"
 	cp "github.com/otiai10/copy"
 	"go.uber.org/zap"
 
@@ -624,15 +623,12 @@ func (autoCodeService *AutoCodeService) CreatePackageTemp(packageName string) er
 	pendingTemp := []autoPackage{{
 		path: packageService,
 		name: packageServiceName,
-		temp: string(subcontract.Server),
 	}, {
 		path: packageRouter,
 		name: packageRouterName,
-		temp: string(subcontract.Router),
 	}, {
 		path: packageAPI,
 		name: packageAPIName,
-		temp: string(subcontract.API),
 	}}
 	for i, s := range pendingTemp {
 		pendingTemp[i].path = filepath.Join(global.GVA_CONFIG.AutoCode.Root, global.GVA_CONFIG.AutoCode.Server, filepath.Clean(fmt.Sprintf(s.path, packageName)))
