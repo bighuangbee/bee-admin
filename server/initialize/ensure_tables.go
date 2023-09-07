@@ -2,10 +2,10 @@ package initialize
 
 import (
 	"context"
-	adapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/bighuangbee/bee-admin/server/model/example"
 	sysModel "github.com/bighuangbee/bee-admin/server/model/system"
 	"github.com/bighuangbee/bee-admin/server/service/system"
+	adapter "github.com/casbin/gorm-adapter/v3"
 	"gorm.io/gorm"
 )
 
@@ -41,14 +41,11 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		sysModel.SysAuthority{},
 		sysModel.JwtBlacklist{},
 		sysModel.SysDictionary{},
-		sysModel.SysAutoCodeHistory{},
 		sysModel.SysOperationRecord{},
 		sysModel.SysDictionaryDetail{},
 		sysModel.SysBaseMenuParameter{},
 		sysModel.SysBaseMenuBtn{},
 		sysModel.SysAuthorityBtn{},
-		sysModel.SysAutoCode{},
-		sysModel.SysChatGptOption{},
 
 		adapter.CasbinRule{},
 
@@ -77,14 +74,11 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		sysModel.SysAuthority{},
 		sysModel.JwtBlacklist{},
 		sysModel.SysDictionary{},
-		sysModel.SysAutoCodeHistory{},
 		sysModel.SysOperationRecord{},
 		sysModel.SysDictionaryDetail{},
 		sysModel.SysBaseMenuParameter{},
 		sysModel.SysBaseMenuBtn{},
 		sysModel.SysAuthorityBtn{},
-		sysModel.SysAutoCode{},
-		sysModel.SysChatGptOption{},
 		adapter.CasbinRule{},
 
 		example.ExaFile{},

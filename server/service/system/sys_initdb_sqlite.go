@@ -11,7 +11,6 @@ import (
 	"github.com/gofrs/uuid/v5"
 	"github.com/gookit/color"
 	"gorm.io/gorm"
-	"path/filepath"
 )
 
 type SqliteInitHandler struct{}
@@ -26,14 +25,14 @@ func (h SqliteInitHandler) WriteConfig(ctx context.Context) error {
 	if !ok {
 		return errors.New("mysql config invalid")
 	}
-	global.GVA_CONFIG.System.DbType = "sqlite"
-	global.GVA_CONFIG.Sqlite = c
-	global.GVA_CONFIG.JWT.SigningKey = uuid.Must(uuid.NewV4()).String()
-	cs := utils.StructToMap(global.GVA_CONFIG)
+	global.CONFIG.System.DbType = "sqlite"
+	global.CONFIG.Sqlite = c
+	global.CONFIG.JWT.SigningKey = uuid.Must(uuid.NewV4()).String()
+	cs := utils.StructToMap(global.CONFIG)
 	for k, v := range cs {
-		global.GVA_VP.Set(k, v)
+		global.VIPER.Set(k, v)
 	}
-	return global.GVA_VP.WriteConfig()
+	return global.VIPER.WriteConfig()
 }
 
 // EnsureDB 创建数据库并初始化 sqlite
@@ -56,7 +55,6 @@ func (h SqliteInitHandler) EnsureDB(ctx context.Context, conf *request.InitDB) (
 	}); err != nil {
 		return ctx, err
 	}
-	global.GVA_CONFIG.AutoCode.Root, _ = filepath.Abs("..")
 	next = context.WithValue(next, "db", db)
 	return next, err
 }

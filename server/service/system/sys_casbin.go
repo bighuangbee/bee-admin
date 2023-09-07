@@ -14,7 +14,6 @@ import (
 	"go.uber.org/zap"
 )
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: UpdateCasbin
 //@description: 更新casbin权限
 //@param: authorityId string, casbinInfos []request.CasbinInfo
@@ -39,14 +38,13 @@ func (casbinService *CasbinService) UpdateCasbin(AuthorityID uint, casbinInfos [
 	return nil
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: UpdateCasbinApi
 //@description: API更新随动
 //@param: oldPath string, newPath string, oldMethod string, newMethod string
 //@return: error
 
 func (casbinService *CasbinService) UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error {
-	err := global.GVA_DB.Model(&gormadapter.CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
+	err := global.DB.Model(&gormadapter.CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
 		"v1": newPath,
 		"v2": newMethod,
 	}).Error
@@ -58,7 +56,6 @@ func (casbinService *CasbinService) UpdateCasbinApi(oldPath string, newPath stri
 	return err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: GetPolicyPathByAuthorityId
 //@description: 获取权限列表
 //@param: authorityId string
@@ -77,7 +74,6 @@ func (casbinService *CasbinService) GetPolicyPathByAuthorityId(AuthorityID uint)
 	return pathMaps
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: ClearCasbin
 //@description: 清除匹配的权限
 //@param: v int, p ...string
@@ -89,7 +85,6 @@ func (casbinService *CasbinService) ClearCasbin(v int, p ...string) bool {
 	return success
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: Casbin
 //@description: 持久化到数据库  引入自定义规则
 //@return: *casbin.Enforcer
@@ -101,7 +96,7 @@ var (
 
 func (casbinService *CasbinService) Casbin() *casbin.SyncedCachedEnforcer {
 	once.Do(func() {
-		a, err := gormadapter.NewAdapterByDB(global.GVA_DB)
+		a, err := gormadapter.NewAdapterByDB(global.DB)
 		if err != nil {
 			zap.L().Error("适配数据库失败请检查casbin表是否为InnoDB引擎!", zap.Error(err))
 			return

@@ -20,7 +20,7 @@ var Gorm = new(_gorm)
 type _gorm struct{}
 
 // Config gorm 自定义配置
-// Author [SliverHorn](https://github.com/SliverHorn)
+//
 func (g *_gorm) Config(prefix string, singular bool) *gorm.Config {
 	config := &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
@@ -35,15 +35,15 @@ func (g *_gorm) Config(prefix string, singular bool) *gorm.Config {
 		Colorful:      true,
 	})
 	var logMode DBBASE
-	switch global.GVA_CONFIG.System.DbType {
+	switch global.CONFIG.System.DbType {
 	case "mysql":
-		logMode = &global.GVA_CONFIG.Mysql
+		logMode = &global.CONFIG.Mysql
 	case "pgsql":
-		logMode = &global.GVA_CONFIG.Pgsql
+		logMode = &global.CONFIG.Pgsql
 	case "oracle":
-		logMode = &global.GVA_CONFIG.Oracle
+		logMode = &global.CONFIG.Oracle
 	default:
-		logMode = &global.GVA_CONFIG.Mysql
+		logMode = &global.CONFIG.Mysql
 	}
 
 	switch logMode.GetLogMode() {

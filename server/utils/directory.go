@@ -11,7 +11,6 @@ import (
 	"go.uber.org/zap"
 )
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: PathExists
 //@description: 文件目录是否存在
 //@param: path string
@@ -31,7 +30,6 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: CreateDir
 //@description: 批量创建文件夹
 //@param: dirs ...string
@@ -44,9 +42,9 @@ func CreateDir(dirs ...string) (err error) {
 			return err
 		}
 		if !exist {
-			global.GVA_LOG.Debug("create directory" + v)
+			global.LOG.Debug("create directory" + v)
 			if err := os.MkdirAll(v, os.ModePerm); err != nil {
-				global.GVA_LOG.Error("create directory"+v, zap.Any(" error:", err))
+				global.LOG.Error("create directory"+v, zap.Any(" error:", err))
 				return err
 			}
 		}

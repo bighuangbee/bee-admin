@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: getMenuTreeMap
 //@description: 获取路由总树map
 //@param: authorityId string
@@ -27,7 +26,7 @@ func (menuService *MenuService) getMenuTreeMap(authorityId uint) (treeMap map[st
 	treeMap = make(map[string][]system.SysMenu)
 
 	var SysAuthorityMenus []system.SysAuthorityMenu
-	err = global.GVA_DB.Where("sys_authority_authority_id = ?", authorityId).Find(&SysAuthorityMenus).Error
+	err = global.DB.Where("sys_authority_authority_id = ?", authorityId).Find(&SysAuthorityMenus).Error
 	if err != nil {
 		return
 	}
@@ -38,7 +37,7 @@ func (menuService *MenuService) getMenuTreeMap(authorityId uint) (treeMap map[st
 		MenuIds = append(MenuIds, SysAuthorityMenus[i].MenuId)
 	}
 
-	err = global.GVA_DB.Where("id in (?)", MenuIds).Order("sort").Preload("Parameters").Find(&baseMenu).Error
+	err = global.DB.Where("id in (?)", MenuIds).Order("sort").Preload("Parameters").Find(&baseMenu).Error
 	if err != nil {
 		return
 	}
@@ -52,7 +51,7 @@ func (menuService *MenuService) getMenuTreeMap(authorityId uint) (treeMap map[st
 		})
 	}
 
-	err = global.GVA_DB.Where("authority_id = ?", authorityId).Preload("SysBaseMenuBtn").Find(&btns).Error
+	err = global.DB.Where("authority_id = ?", authorityId).Preload("SysBaseMenuBtn").Find(&btns).Error
 	if err != nil {
 		return
 	}
@@ -70,7 +69,6 @@ func (menuService *MenuService) getMenuTreeMap(authorityId uint) (treeMap map[st
 	return treeMap, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: GetMenuTree
 //@description: 获取动态菜单树
 //@param: authorityId string
@@ -85,7 +83,6 @@ func (menuService *MenuService) GetMenuTree(authorityId uint) (menus []system.Sy
 	return menus, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: getChildrenList
 //@description: 获取子菜单
 //@param: menu *model.SysMenu, treeMap map[string][]model.SysMenu
@@ -99,7 +96,6 @@ func (menuService *MenuService) getChildrenList(menu *system.SysMenu, treeMap ma
 	return err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: GetInfoList
 //@description: 获取路由分页
 //@return: list interface{}, total int64,err error
@@ -114,7 +110,6 @@ func (menuService *MenuService) GetInfoList() (list interface{}, total int64, er
 	return menuList, total, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: getBaseChildrenList
 //@description: 获取菜单的子菜单
 //@param: menu *model.SysBaseMenu, treeMap map[string][]model.SysBaseMenu
@@ -128,20 +123,18 @@ func (menuService *MenuService) getBaseChildrenList(menu *system.SysBaseMenu, tr
 	return err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: AddBaseMenu
 //@description: 添加基础路由
 //@param: menu model.SysBaseMenu
 //@return: error
 
 func (menuService *MenuService) AddBaseMenu(menu system.SysBaseMenu) error {
-	if !errors.Is(global.GVA_DB.Where("name = ?", menu.Name).First(&system.SysBaseMenu{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.DB.Where("name = ?", menu.Name).First(&system.SysBaseMenu{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在重复name，请修改name")
 	}
-	return global.GVA_DB.Create(&menu).Error
+	return global.DB.Create(&menu).Error
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: getBaseMenuTreeMap
 //@description: 获取路由总树map
 //@return: treeMap map[string][]system.SysBaseMenu, err error
@@ -149,14 +142,13 @@ func (menuService *MenuService) AddBaseMenu(menu system.SysBaseMenu) error {
 func (menuService *MenuService) getBaseMenuTreeMap() (treeMap map[string][]system.SysBaseMenu, err error) {
 	var allMenus []system.SysBaseMenu
 	treeMap = make(map[string][]system.SysBaseMenu)
-	err = global.GVA_DB.Order("sort").Preload("MenuBtn").Preload("Parameters").Find(&allMenus).Error
+	err = global.DB.Order("sort").Preload("MenuBtn").Preload("Parameters").Find(&allMenus).Error
 	for _, v := range allMenus {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return treeMap, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: GetBaseMenuTree
 //@description: 获取基础路由树
 //@return: menus []system.SysBaseMenu, err error
@@ -170,7 +162,6 @@ func (menuService *MenuService) GetBaseMenuTree() (menus []system.SysBaseMenu, e
 	return menus, err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: AddMenuAuthority
 //@description: 为角色增加menu树
 //@param: menus []model.SysBaseMenu, authorityId string
@@ -184,7 +175,6 @@ func (menuService *MenuService) AddMenuAuthority(menus []system.SysBaseMenu, aut
 	return err
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
 //@function: GetMenuAuthority
 //@description: 查看当前角色树
 //@param: info *request.GetAuthorityId
@@ -193,7 +183,7 @@ func (menuService *MenuService) AddMenuAuthority(menus []system.SysBaseMenu, aut
 func (menuService *MenuService) GetMenuAuthority(info *request.GetAuthorityId) (menus []system.SysMenu, err error) {
 	var baseMenu []system.SysBaseMenu
 	var SysAuthorityMenus []system.SysAuthorityMenu
-	err = global.GVA_DB.Where("sys_authority_authority_id = ?", info.AuthorityId).Find(&SysAuthorityMenus).Error
+	err = global.DB.Where("sys_authority_authority_id = ?", info.AuthorityId).Find(&SysAuthorityMenus).Error
 	if err != nil {
 		return
 	}
@@ -204,7 +194,7 @@ func (menuService *MenuService) GetMenuAuthority(info *request.GetAuthorityId) (
 		MenuIds = append(MenuIds, SysAuthorityMenus[i].MenuId)
 	}
 
-	err = global.GVA_DB.Where("id in (?) ", MenuIds).Order("sort").Find(&baseMenu).Error
+	err = global.DB.Where("id in (?) ", MenuIds).Order("sort").Find(&baseMenu).Error
 
 	for i := range baseMenu {
 		menus = append(menus, system.SysMenu{
@@ -214,22 +204,20 @@ func (menuService *MenuService) GetMenuAuthority(info *request.GetAuthorityId) (
 			Parameters:  baseMenu[i].Parameters,
 		})
 	}
-	// sql := "SELECT authority_menu.keep_alive,authority_menu.default_menu,authority_menu.created_at,authority_menu.updated_at,authority_menu.deleted_at,authority_menu.menu_level,authority_menu.parent_id,authority_menu.path,authority_menu.`name`,authority_menu.hidden,authority_menu.component,authority_menu.title,authority_menu.icon,authority_menu.sort,authority_menu.menu_id,authority_menu.authority_id FROM authority_menu WHERE authority_menu.authority_id = ? ORDER BY authority_menu.sort ASC"
-	// err = global.GVA_DB.Raw(sql, authorityId).Scan(&menus).Error
 	return menus, err
 }
 
 // UserAuthorityDefaultRouter 用户角色默认路由检查
 //
-//	Author [SliverHorn](https://github.com/SliverHorn)
+//
 func (menuService *MenuService) UserAuthorityDefaultRouter(user *system.SysUser) {
 	var menuIds []string
-	err := global.GVA_DB.Model(&system.SysAuthorityMenu{}).Where("sys_authority_authority_id = ?", user.AuthorityId).Pluck("sys_base_menu_id", &menuIds).Error
+	err := global.DB.Model(&system.SysAuthorityMenu{}).Where("sys_authority_authority_id = ?", user.AuthorityId).Pluck("sys_base_menu_id", &menuIds).Error
 	if err != nil {
 		return
 	}
 	var am system.SysBaseMenu
-	err = global.GVA_DB.First(&am, "name = ? and id in (?)", user.Authority.DefaultRouter, menuIds).Error
+	err = global.DB.First(&am, "name = ? and id in (?)", user.Authority.DefaultRouter, menuIds).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		user.Authority.DefaultRouter = "404"
 	}
