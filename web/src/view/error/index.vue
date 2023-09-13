@@ -5,7 +5,6 @@
         <img src="../../assets/notFound.png">
         <p>页面出错了</p>
         <p>↓</p>
-        <img src="../../assets/qm.png" class="w-16 h-16 mt-20">
         <el-button @click="toDashboard">返回首页</el-button>
       </div>
     </div>
