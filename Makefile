@@ -43,7 +43,9 @@ build-server-local:
 
 #-------本地运行-------
 run-server:
-	source ~/.go1.20_bash && cd ~/workspace/source/bee-admin/server/ && go run .
+	export GIN_MODE=release && \
+	source ~/.go1.20_bash && \
+	cd ~/workspace/source/bee-admin/server/ && go run .
 
 run-web:
 	cd ~/workspace/source/bee-admin/web && npm run serve

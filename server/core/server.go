@@ -36,9 +36,9 @@ func Run() {
 	time.Sleep(10 * time.Microsecond)
 	global.LOG.Info("server run success on ", zap.String("address", address))
 
-	fmt.Printf(`
-	文档地址:http://127.0.0.1%s/swagger/index.html
-	运行地址:http://127.0.0.1:8080`, address)
+	//fmt.Printf(`
+	//文档地址:http://127.0.0.1%s/swagger/index.html
+	//运行地址:http://127.0.0.1:8000`, address)
 
 	global.LOG.Error(s.ListenAndServe().Error())
 }

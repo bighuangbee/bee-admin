@@ -4,13 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"github.com/bighuangbee/bee-admin/server/core/internal"
+	"github.com/bighuangbee/bee-admin/server/global"
+	_ "github.com/bighuangbee/bee-admin/server/packfile"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"os"
-
-	"github.com/bighuangbee/bee-admin/server/global"
-	_ "github.com/bighuangbee/bee-admin/server/packfile"
 )
 
 // Viper //
@@ -26,20 +25,20 @@ func Viper(path ...string) *viper.Viper {
 				switch gin.Mode() {
 				case gin.DebugMode:
 					config = internal.ConfigDefaultFile
-					fmt.Printf("您正在使用gin模式的%s环境名称,config的路径为%s\n", gin.EnvGinMode, internal.ConfigDefaultFile)
+					fmt.Printf("gin模式:%s,config路径:%s\n", gin.EnvGinMode, internal.ConfigDefaultFile)
 				case gin.ReleaseMode:
-					config = internal.ConfigReleaseFile
-					fmt.Printf("您正在使用gin模式的%s环境名称,config的路径为%s\n", gin.EnvGinMode, internal.ConfigReleaseFile)
+					config = internal.ConfigDefaultFile
+					fmt.Printf("gin模式:%s,config路径:%s\n", gin.EnvGinMode, internal.ConfigDefaultFile)
 				case gin.TestMode:
 					config = internal.ConfigTestFile
-					fmt.Printf("您正在使用gin模式的%s环境名称,config的路径为%s\n", gin.EnvGinMode, internal.ConfigTestFile)
+					fmt.Printf("gin模式:%s,config路径:%s\n", gin.EnvGinMode, internal.ConfigTestFile)
 				}
 			} else { // internal.ConfigEnv 常量存储的环境变量不为空 将值赋值于config
 				config = configEnv
 				fmt.Printf("您正在使用%s环境变量,config的路径为%s\n", internal.ConfigEnv, config)
 			}
 		} else { // 命令行参数不为空 将值赋值于config
-			fmt.Printf("您正在使用命令行的-c参数传递的值,config的路径为%s\n", config)
+			fmt.Printf("config的路径为%s\n", config)
 		}
 	} else { // 函数传递的可变参数的第一个值赋值于config
 		config = path[0]

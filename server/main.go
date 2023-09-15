@@ -26,6 +26,9 @@ func main() {
 		// 程序结束前关闭数据库链接
 		db, _ := global.DB.DB()
 		defer db.Close()
+	} else {
+		global.LOG.Error("数据库连接失败")
+		return
 	}
 	core.Run()
 }
